@@ -11,46 +11,63 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-const SummarizeTrendingVideoInputSchema = z.object({
-  title: z.string().describe('The title of the trending video.'),
-  channelName: z.string().describe('The name of the YouTube channel.'),
-  description: z.string().describe('The description of the trending video.'),
-  views: z.string().describe('The number of views the video has.'),
-  publishedDate: z.string().describe('The date the video was published.'),
-});
-export type SummarizeTrendingVideoInput = z.infer<typeof SummarizeTrendingVideoInputSchema>;
-
-const SummarizeTrendingVideoOutputSchema = z.object({
+const VideoSummarySchema = z.object({
+  videoId: z.string().describe('The ID of the video.'),
   summary: z.string().describe('A short summary of the trending video.'),
 });
-export type SummarizeTrendingVideoOutput = z.infer<typeof SummarizeTrendingVideoOutputSchema>;
 
-export async function summarizeTrendingVideo(input: SummarizeTrendingVideoInput): Promise<SummarizeTrendingVideoOutput> {
-  return summarizeTrendingVideoFlow(input);
+const SummarizeTrendingVideosInputSchema = z.object({
+  videos: z.array(
+    z.object({
+      id: z.string().describe('The ID of the video.'),
+      title: z.string().describe('The title of the trending video.'),
+      channelName: z.string().describe('The name of the YouTube channel.'),
+      description: z.string().describe('The description of the trending video.'),
+      views: z.string().describe('The number of views the video has.'),
+      publishedDate: z.string().describe('The date the video was published.'),
+    })
+  ),
+});
+export type SummarizeTrendingVideosInput = z.infer<typeof SummarizeTrendingVideosInputSchema>;
+
+const SummarizeTrendingVideosOutputSchema = z.object({
+  summaries: z.array(VideoSummarySchema),
+});
+export type SummarizeTrendingVideosOutput = z.infer<typeof SummarizeTrendingVideosOutputSchema>;
+
+export async function summarizeTrendingVideos(
+  input: SummarizeTrendingVideosInput
+): Promise<SummarizeTrendingVideosOutput> {
+  return summarizeTrendingVideosFlow(input);
 }
 
 const prompt = ai.definePrompt({
-  name: 'summarizeTrendingVideoPrompt',
-  input: {schema: SummarizeTrendingVideoInputSchema},
-  output: {schema: SummarizeTrendingVideoOutputSchema},
+  name: 'summarizeTrendingVideosPrompt',
+  input: {schema: SummarizeTrendingVideosInputSchema},
+  output: {schema: SummarizeTrendingVideosOutputSchema},
   prompt: `You are an AI assistant that provides short summaries of YouTube trending videos.
 
-  Given the following information about a trending video, create a concise summary that captures the video's main topic and what makes it interesting to viewers.
+  Given the following list of trending videos, create a concise summary for each one that captures the video's main topic and what makes it interesting to viewers.
 
+  {{#each videos}}
+  Video ID: {{{id}}}
   Title: {{{title}}}
   Channel: {{{channelName}}}
   Description: {{{description}}}
   Views: {{{views}}}
   Published Date: {{{publishedDate}}}
+  ---
+  {{/each}}
 
-  Summary:`, // Keep it concise
+  Provide a summary for each video in the requested JSON format.
+  `,
 });
 
-const summarizeTrendingVideoFlow = ai.defineFlow(
+const summarizeTrendingVideosFlow = ai.defineFlow(
   {
-    name: 'summarizeTrendingVideoFlow',
-    inputSchema: SummarizeTrendingVideoInputSchema,
-    outputSchema: SummarizeTrendingVideoOutputSchema,
+    name: 'summarizeTrendingVideosFlow',
+    inputSchema: SummarizeTrendingVideosInputSchema,
+    outputSchema: SummarizeTrendingVideosOutputSchema,
   },
   async input => {
     const {output} = await prompt(input);

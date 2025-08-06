@@ -4,8 +4,40 @@ import { Footer } from '@/components/trend-gazer/footer';
 import { getTrendingVideos } from '@/lib/youtube';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
+import { summarizeTrendingVideos } from '@/ai/flows/summarize-trending-videos';
+import type { YouTubeVideo } from '@/lib/types';
 
 export const revalidate = 3600; // Revalidate every hour
+
+async function getSummaries(videos: YouTubeVideo[]) {
+  if (!videos || videos.length === 0) {
+    return {};
+  }
+  try {
+    const summaryInput = {
+      videos: videos.map(video => ({
+        id: video.id,
+        title: video.snippet.title,
+        channelName: video.snippet.channelTitle,
+        description: video.snippet.description,
+        views: video.statistics.viewCount,
+        publishedDate: video.snippet.publishedAt,
+      })),
+    };
+    const summaryResult = await summarizeTrendingVideos(summaryInput);
+
+    // Convert array of summaries to a map for easy lookup
+    return summaryResult.summaries.reduce((acc, s) => {
+      acc[s.videoId] = s.summary;
+      return acc;
+    }, {} as Record<string, string>);
+
+  } catch (error) {
+    console.error('AI summary failed:', error);
+    // Return empty object on error so the page can still render
+    return {};
+  }
+}
 
 export default async function Home({
   searchParams,
@@ -16,13 +48,14 @@ export default async function Home({
   
   try {
     const videos = await getTrendingVideos(region);
+    const summaries = await getSummaries(videos);
 
     return (
       <div className="flex flex-col min-h-screen">
         <Header currentRegion={region} />
         <main className="flex-1 container mx-auto px-4 py-8">
           {videos.length > 0 ? (
-            <VideoGrid videos={videos} />
+            <VideoGrid videos={videos} summaries={summaries} />
           ) : (
             <div className="text-center">
               <h2 className="text-2xl font-semibold">No trending videos found.</h2>

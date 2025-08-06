@@ -2,31 +2,16 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Eye, CalendarDays, PlayCircle } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import type { YouTubeVideo } from '@/lib/types';
 import { formatViews, formatPublishedDate } from '@/lib/utils';
-import { summarizeTrendingVideo } from '@/ai/flows/summarize-trending-videos';
 
 type VideoCardProps = {
   video: YouTubeVideo;
+  summary?: string | null;
 };
 
-export async function VideoCard({ video }: VideoCardProps) {
-  let summary: string | null = null;
-  try {
-    const summaryResult = await summarizeTrendingVideo({
-      title: video.snippet.title,
-      channelName: video.snippet.channelTitle,
-      description: video.snippet.description,
-      views: video.statistics.viewCount,
-      publishedDate: video.snippet.publishedAt,
-    });
-    summary = summaryResult.summary;
-  } catch (error) {
-    console.error(`AI summary failed for video ${video.id}:`, error);
-  }
-
+export function VideoCard({ video, summary }: VideoCardProps) {
   const videoUrl = `https://www.youtube.com/watch?v=${video.id}`;
   const thumbnailUrl = video.snippet.thumbnails.standard?.url || video.snippet.thumbnails.high.url;
 
