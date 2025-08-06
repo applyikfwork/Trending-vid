@@ -18,6 +18,7 @@ export function Footer() {
         </div>
         <div className="mt-8 text-center text-xs text-muted-foreground/80 border-t border-border pt-4">
           <p>&copy; {new Date().getFullYear()} Trend Gazer. All rights reserved.</p>
+          <p className="mt-2">Created by Jitender Prajapat</p>
         </div>
       </div>
     </footer>
