@@ -1,13 +1,14 @@
 
 import type { YouTubeVideo } from './types';
 
-const API_KEY = process.env.YOUTUBE_API_KEY;
+// IMPORTANT: Replace with your actual YouTube Data API key
+const API_KEY = 'YOUR_YOUTUBE_API_KEY';
 const VIDEOS_API_URL = 'https://www.googleapis.com/youtube/v3/videos';
 const SEARCH_API_URL = 'https://www.googleapis.com/youtube/v3/search';
 
 async function fetchFromApi(url: URL) {
-  if (!API_KEY) {
-    throw new Error('YOUTUBE_API_KEY is not set in the environment variables.');
+  if (!API_KEY || API_KEY === 'YOUR_YOUTUBE_API_KEY') {
+    throw new Error('YOUTUBE_API_KEY is not set. Please replace "YOUR_YOUTUBE_API_KEY" in src/lib/youtube.ts with your actual key.');
   }
   url.searchParams.append('key', API_KEY);
 
