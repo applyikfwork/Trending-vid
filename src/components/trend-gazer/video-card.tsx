@@ -8,10 +8,9 @@ import { Badge } from '@/components/ui/badge';
 
 type VideoCardProps = {
   video: YouTubeVideo;
-  summary?: string | null;
 };
 
-export function VideoCard({ video, summary }: VideoCardProps) {
+export function VideoCard({ video }: VideoCardProps) {
   const videoUrl = `https://www.youtube.com/watch?v=${video.id}`;
   const thumbnailUrl = video.snippet.thumbnails.standard?.url || video.snippet.thumbnails.high.url;
 
@@ -38,18 +37,7 @@ export function VideoCard({ video, summary }: VideoCardProps) {
             {video.snippet.title}
           </Link>
         </CardTitle>
-        <p className="text-sm text-muted-foreground mb-4">{video.snippet.channelTitle}</p>
-        
-        <div className="flex-grow" />
-
-        {summary && (
-            <div className="space-y-2 mt-auto bg-black/20 p-3 rounded-lg">
-              <Badge variant="destructive" className="text-xs font-bold tracking-wider uppercase bg-primary/10 text-primary border-primary/20 hover:bg-primary/20">
-                🤖 AI Highlight
-              </Badge>
-              <p className="text-sm text-muted-foreground italic line-clamp-3">"{summary}"</p>
-            </div>
-        )}
+        <p className="text-sm text-muted-foreground mb-4 flex-grow">{video.snippet.channelTitle}</p>
       </CardContent>
       <CardFooter className="p-4 pt-2 flex justify-between items-center text-xs text-muted-foreground">
         <div className="flex items-center gap-1.5">
