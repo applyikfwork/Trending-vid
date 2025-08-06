@@ -1,7 +1,48 @@
-import { Header } from '@/components/trend-gazer/header';
-import { Footer } from '@/components/trend-gazer/footer';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
+import { Footer } from '@/components/trend-gazer/footer';
+import { ThemeToggle } from '@/components/trend-gazer/theme-toggle';
+
+function LoadingHeader() {
+  return (
+    <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-10">
+      <div className="container mx-auto px-4">
+        <div className="py-4 flex justify-between items-center gap-2 sm:gap-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-primary tracking-tighter whitespace-nowrap">
+            <span className="mr-2 text-2xl sm:text-3xl">🔥</span>
+            Trend Gazer
+          </h1>
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="w-[140px] sm:w-[180px] h-10">
+              <Skeleton className="w-full h-full" />
+            </div>
+            <ThemeToggle />
+          </div>
+        </div>
+        <div className="border-b">
+          <div className="-mb-px flex space-x-6" aria-label="Tabs">
+            <div className="group inline-flex items-center gap-2 py-3 px-1 border-b-2 border-primary text-primary font-medium text-sm">
+              <Skeleton className="w-5 h-5" />
+              <Skeleton className="w-12 h-4" />
+            </div>
+            <div className="group inline-flex items-center gap-2 py-3 px-1 border-b-2 border-transparent text-muted-foreground font-medium text-sm">
+              <Skeleton className="w-5 h-5" />
+              <Skeleton className="w-12 h-4" />
+            </div>
+            <div className="group inline-flex items-center gap-2 py-3 px-1 border-b-2 border-transparent text-muted-foreground font-medium text-sm">
+              <Skeleton className="w-5 h-5" />
+              <Skeleton className="w-12 h-4" />
+            </div>
+            <div className="group inline-flex items-center gap-2 py-3 px-1 border-b-2 border-transparent text-muted-foreground font-medium text-sm">
+              <Skeleton className="w-5 h-5" />
+              <Skeleton className="w-12 h-4" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
 
 function VideoCardSkeleton() {
   return (
@@ -27,8 +68,7 @@ function VideoCardSkeleton() {
 export default function Loading() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* We pass a placeholder region; it will be correct on client-side hydration */}
-      <Header currentRegion="IN" currentCategory="all" />
+      <LoadingHeader />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Array.from({ length: 12 }).map((_, i) => (
