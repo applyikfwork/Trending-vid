@@ -1,0 +1,28 @@
+
+.container {
+  padding: 2rem;
+}
+
+.error-code {
+  font-size: 8rem;
+  font-weight: 800;
+  color: hsl(var(--primary));
+  line-height: 1;
+  text-shadow: 4px 4px 0px hsl(var(--primary) / 0.2);
+}
+
+.error-message {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  color: hsl(var(--foreground));
+}
+
+.error-description {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  color: hsl(var(--muted-foreground));
+  max-width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+}
