@@ -1,8 +1,7 @@
 
 import type { YouTubeVideo } from './types';
 
-// IMPORTANT: Replace with your actual YouTube Data API key
-const API_KEY = 'YOUR_YOUTUBE_API_KEY';
+const API_KEY = 'AIzaSyCyEF3GUU7_zRp4-qQQhn7gccrifsdDUgY';
 const VIDEOS_API_URL = 'https://www.googleapis.com/youtube/v3/videos';
 const SEARCH_API_URL = 'https://www.googleapis.com/youtube/v3/search';
 
@@ -69,7 +68,7 @@ export async function getTrendingShorts(regionCode: string): Promise<YouTubeVide
 
   const videosUrl = new URL(VIDEOS_API_URL);
   videosUrl.searchParams.append('part', 'snippet,statistics');
-  videosUrl.searchParams.append('id', videoIds);
+  videosUrl.search_params.append('id', videoIds);
     
   const videosData = await fetchFromApi(videosUrl);
   return videosData.items || [];
