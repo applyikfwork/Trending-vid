@@ -16,15 +16,15 @@ export function Footer() {
             </p>
           </div>
           <div className="flex items-center gap-4 text-muted-foreground">
-             <p className="text-sm flex items-center gap-2">Powered by</p>
+            <p className="text-sm font-semibold">Sources:</p>
             <Link href="https://developers.google.com/youtube/v3" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-primary transition-colors">
               <Youtube className="w-5 h-5" />
-              <span className="font-semibold">YouTube Data API</span>
+              <span className="font-medium">YouTube Data API</span>
             </Link>
             <span className="text-border">|</span>
             <Link href="https://ai.google.dev/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-primary transition-colors">
               <Gem className="w-5 h-5" />
-               <span className="font-semibold">Gemini</span>
+               <span className="font-medium">Gemini</span>
             </Link>
           </div>
         </div>
