@@ -4,10 +4,11 @@ import * as React from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Music, Clapperboard, Home } from 'lucide-react';
+import { Music, Clapperboard, Home, Flame } from 'lucide-react';
 
 const categories = [
   { name: 'all', label: 'All', icon: Home },
+  { name: 'shorts', label: 'Shorts', icon: Flame },
   { name: 'music', label: 'Music', icon: Music },
   { name: 'movies', label: 'Movies', icon: Clapperboard },
 ];

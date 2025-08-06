@@ -1,10 +1,9 @@
 import { Header } from '@/components/trend-gazer/header';
 import { VideoGrid } from '@/components/trend-gazer/video-grid';
 import { Footer } from '@/components/trend-gazer/footer';
-import { getTrendingVideos } from '@/lib/youtube';
+import { getTrendingVideos, getTrendingShorts } from '@/lib/youtube';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
-import type { YouTubeVideo } from '@/lib/types';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -22,9 +21,12 @@ export default async function Home({
   const region = searchParams.region || 'IN';
   const category = searchParams.category || 'all';
   const categoryId = videoCategoryIds[category] || '0';
-  
+
   try {
-    const videos = await getTrendingVideos(region, categoryId);
+    const videos =
+      category === 'shorts'
+        ? await getTrendingShorts(region)
+        : await getTrendingVideos(region, categoryId);
 
     return (
       <div className="flex flex-col min-h-screen">
