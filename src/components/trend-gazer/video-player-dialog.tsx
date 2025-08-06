@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -6,7 +7,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,7 @@ type VideoPlayerDialogProps = {
 export function VideoPlayerDialog({ videoId, videoTitle, children }: VideoPlayerDialogProps) {
   return (
     <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      {children}
       <DialogContent className="max-w-4xl p-0 border-0 bg-background/90 backdrop-blur-sm">
         <DialogHeader className="p-4 pb-0">
           <DialogTitle className="line-clamp-2 leading-snug">{videoTitle}</DialogTitle>
@@ -38,7 +38,7 @@ export function VideoPlayerDialog({ videoId, videoTitle, children }: VideoPlayer
         </div>
         <DialogFooter className="p-4 pt-2 bg-secondary/50 rounded-b-lg">
            <Button asChild variant="secondary">
-            <Link href={`https://www.youtube.com/watch?v=${videoId}`} target="_blank" rel="noopener noreferrer">
+            <Link href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noopener noreferrer">
               <Youtube />
               Open on YouTube
             </Link>

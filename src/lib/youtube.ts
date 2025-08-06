@@ -1,3 +1,4 @@
+
 import type { YouTubeVideo } from './types';
 
 const API_KEY = "AIzaSyCyEF3GUU7_zRp4-qQQhn7gccrifsdDUgY";
@@ -43,7 +44,7 @@ export async function getTrendingShorts(regionCode: string): Promise<YouTubeVide
   searchUrl.searchParams.append('q', '#shorts');
   searchUrl.searchParams.append('type', 'video');
   searchUrl.searchParams.append('videoDuration', 'short');
-  searchUrl.searchParams.append('order', 'viewCount');
+  searchUrl.searchParams.append('order', 'date');
   searchUrl.searchParams.append('maxResults', '50');
   searchUrl.searchParams.append('regionCode', regionCode);
   searchUrl.searchParams.append('key', API_KEY);
