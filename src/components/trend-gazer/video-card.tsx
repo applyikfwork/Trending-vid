@@ -1,4 +1,8 @@
+
+'use client';
+
 import Image from 'next/image';
+import { useState, useRef, useCallback } from 'react';
 import { Eye, CalendarDays, PlayCircle } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import type { YouTubeVideo } from '@/lib/types';
@@ -11,25 +15,64 @@ type VideoCardProps = {
 };
 
 export function VideoCard({ video, rank }: VideoCardProps) {
+  const [isHovering, setIsHovering] = useState(false);
+  const [isPlayerReady, setIsPlayerReady] = useState(false);
+  const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
+
   const thumbnailUrl = video.snippet.thumbnails.standard?.url || video.snippet.thumbnails.high.url;
+
+  const handleMouseEnter = () => {
+    hoverTimeout.current = setTimeout(() => {
+      setIsHovering(true);
+    }, 500); // Delay before showing preview
+  };
+
+  const handleMouseLeave = () => {
+    if (hoverTimeout.current) {
+      clearTimeout(hoverTimeout.current);
+    }
+    setIsHovering(false);
+    setIsPlayerReady(false);
+  };
+  
+  const onPlayerReady = useCallback(() => {
+    setIsPlayerReady(true);
+  }, []);
 
   return (
     <VideoPlayerDialog videoId={video.id} videoTitle={video.snippet.title}>
-      <Card className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-secondary border-0 rounded-xl cursor-pointer group">
+      <Card 
+        className="flex flex-col h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-secondary border-0 rounded-xl cursor-pointer group"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
         <CardHeader className="p-0">
-          <div className="relative">
-            <Image
-              src={thumbnailUrl}
-              alt={video.snippet.title}
-              width={640}
-              height={480}
-              className="w-full h-auto object-cover aspect-video transition-transform duration-300 group-hover:scale-105 rounded-t-xl"
-              data-ai-hint="video thumbnail"
-            />
-            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-xl">
-              <PlayCircle className="w-16 h-16 text-white/90 drop-shadow-lg" />
-            </div>
-            <div className="absolute top-2 left-2 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center justify-center backdrop-blur-sm">
+          <div className="relative aspect-video">
+            {isHovering ? (
+              <iframe
+                className={`w-full h-full rounded-t-xl transition-opacity duration-300 ${isPlayerReady ? 'opacity-100' : 'opacity-0'}`}
+                src={`https://www.youtube.com/embed/${video.id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${video.id}`}
+                title={`Preview of ${video.snippet.title}`}
+                frameBorder="0"
+                allow="autoplay; encrypted-media"
+                onLoad={onPlayerReady}
+              ></iframe>
+            ) : (
+              <>
+                <Image
+                  src={thumbnailUrl}
+                  alt={video.snippet.title}
+                  width={640}
+                  height={480}
+                  className="w-full h-auto object-cover aspect-video transition-transform duration-300 group-hover:scale-105 rounded-t-xl"
+                  data-ai-hint="video thumbnail"
+                />
+                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-xl">
+                  <PlayCircle className="w-16 h-16 text-white/90 drop-shadow-lg" />
+                </div>
+              </>
+            )}
+             <div className="absolute top-2 left-2 bg-black/60 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center justify-center backdrop-blur-sm">
               #{rank}
             </div>
           </div>
