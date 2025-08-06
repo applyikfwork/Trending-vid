@@ -1,5 +1,6 @@
 import { RegionSelector } from './region-selector';
 import { CategoryTabs } from './category-tabs';
+import { ThemeToggle } from './theme-toggle';
 
 type HeaderProps = {
   currentRegion: string;
@@ -15,7 +16,10 @@ export function Header({ currentRegion, currentCategory }: HeaderProps) {
             <span className="mr-2 text-3xl">🔥</span>
             Trend Gazer
           </h1>
-          <RegionSelector currentRegion={currentRegion} />
+          <div className="flex items-center gap-4">
+            <RegionSelector currentRegion={currentRegion} />
+            <ThemeToggle />
+          </div>
         </div>
         <CategoryTabs currentCategory={currentCategory} />
       </div>
