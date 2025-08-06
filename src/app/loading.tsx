@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 
 function VideoCardSkeleton() {
   return (
-    <Card className="flex flex-col h-full overflow-hidden">
+    <Card className="flex flex-col h-full overflow-hidden bg-secondary border-0">
       <CardHeader className="p-0">
         <Skeleton className="w-full aspect-video" />
       </CardHeader>
@@ -28,7 +28,7 @@ export default function Loading() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* We pass a placeholder region; it will be correct on client-side hydration */}
-      <Header currentRegion="US" />
+      <Header currentRegion="IN" />
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Array.from({ length: 12 }).map((_, i) => (

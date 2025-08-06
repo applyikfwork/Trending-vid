@@ -37,7 +37,7 @@ export function RegionSelector({ currentRegion }: { currentRegion: string }) {
 
   return (
     <Select onValueChange={handleRegionChange} defaultValue={currentRegion}>
-      <SelectTrigger className="w-[180px] bg-accent border-accent-foreground/20 focus:ring-accent">
+      <SelectTrigger className="w-[180px] bg-secondary border-secondary focus:ring-primary">
         <SelectValue placeholder="Select region" >{currentRegionLabel}</SelectValue>
       </SelectTrigger>
       <SelectContent>
