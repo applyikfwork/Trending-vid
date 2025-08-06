@@ -55,7 +55,7 @@ export async function getTrendingShorts(regionCode: string): Promise<YouTubeVide
   searchUrl.searchParams.append('type', 'video');
   searchUrl.searchParams.append('videoDuration', 'short');
   searchUrl.searchParams.append('order', 'date');
-  searchUrl.search_params.append('relevanceLanguage', 'en');
+  searchUrl.searchParams.append('relevanceLanguage', 'en');
   searchUrl.searchParams.append('maxResults', '50');
   searchUrl.searchParams.append('regionCode', regionCode);
   
