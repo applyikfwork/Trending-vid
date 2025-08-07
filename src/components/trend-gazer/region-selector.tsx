@@ -9,19 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-export const regions = [
-  { value: 'US', label: '🇺🇸 United States' },
-  { value: 'IN', label: '🇮🇳 India' },
-  { value: 'GB', label: '🇬🇧 Great Britain' },
-  { value: 'JP', label: '🇯🇵 Japan' },
-  { value: 'KR', label: '🇰🇷 South Korea' },
-  { value: 'BR', label: '🇧🇷 Brazil' },
-  { value: 'CA', label: '🇨🇦 Canada' },
-  { value: 'DE', label: '🇩🇪 Germany' },
-  { value: 'FR', label: '🇫🇷 France' },
-  { value: 'AU', label: '🇦🇺 Australia' },
-];
+import { regions } from '@/lib/regions';
 
 export function RegionSelector({ currentRegion }: { currentRegion: string }) {
   const router = useRouter();

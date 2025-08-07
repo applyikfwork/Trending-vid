@@ -5,7 +5,7 @@ import { getTrendingVideos, getTrendingShorts } from '@/lib/youtube';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import type { Metadata } from 'next';
-import { regions } from '@/components/trend-gazer/region-selector';
+import { regions } from '@/lib/regions';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -31,7 +31,7 @@ export async function generateMetadata({
   const region = searchParams.region || 'IN';
   const category = searchParams.category || 'all';
 
-  const regionLabel = regions.find((r) => r.value === region)?.label.split(' ')[1] || 'India';
+  const regionLabel = regions.find((r) => r.value === region)?.label.split(' ').slice(1).join(' ') || 'India';
   const categoryLabel = categoryLabels[category] || 'All';
   
   let title = `Trending ${categoryLabel} Videos in ${regionLabel}`;
