@@ -4,6 +4,8 @@ import { Footer } from '@/components/trend-gazer/footer';
 import { getTrendingVideos, getTrendingShorts } from '@/lib/youtube';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
+import type { Metadata } from 'next';
+import { regions } from '@/components/trend-gazer/region-selector';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -11,7 +13,66 @@ const videoCategoryIds: Record<string, string> = {
   all: '0',
   music: '10',
   movies: '1',
+  shorts: 'shorts',
 };
+
+const categoryLabels: Record<string, string> = {
+  all: 'All',
+  music: 'Music',
+  movies: 'Movies',
+  shorts: 'Shorts',
+};
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: { region?: string; category?: string };
+}): Promise<Metadata> {
+  const region = searchParams.region || 'IN';
+  const category = searchParams.category || 'all';
+
+  const regionLabel = regions.find((r) => r.value === region)?.label.split(' ')[1] || 'India';
+  const categoryLabel = categoryLabels[category] || 'All';
+  
+  let title = `Trending ${categoryLabel} Videos in ${regionLabel}`;
+  if (category === 'all') {
+    title = `Top Trending YouTube Videos in ${regionLabel}`;
+  }
+  if (category === 'shorts') {
+    title = `Trending YouTube Shorts in ${regionLabel}`;
+  }
+  
+  const description = `Watch the latest and most popular trending YouTube videos in ${regionLabel} for the ${categoryLabel} category. Updated hourly.`;
+  const imageUrl = "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"; // A default image
+
+  return {
+    title: title,
+    description: description,
+    openGraph: {
+      title: title,
+      description: description,
+      url: new URL(`https://trending-vid.netlify.app?region=${region}&category=${category}`),
+      siteName: 'Trend Gazer',
+      images: [
+        {
+          url: imageUrl,
+          width: 1280,
+          height: 720,
+          alt: 'Trending videos on Trend Gazer',
+        },
+      ],
+      locale: 'en_US',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: title,
+      description: description,
+      images: [imageUrl],
+    },
+  };
+}
+
 
 export default async function Home({
   searchParams,
@@ -28,8 +89,42 @@ export default async function Home({
         ? await getTrendingShorts(region)
         : await getTrendingVideos(region, categoryId);
 
+    const jsonLd = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      'name': `Trending ${categoryLabels[category]} Videos in ${regions.find(r => r.value === region)?.label || 'India'}`,
+      'description': `A list of the top trending YouTube videos for the category ${categoryLabels[category]} in ${regions.find(r => r.value === region)?.label || 'India'}.`,
+      'itemListElement': videos.map((video, index) => ({
+        '@type': 'ListItem',
+        'position': index + 1,
+        'item': {
+          '@type': 'VideoObject',
+          'name': video.snippet.title,
+          'description': video.snippet.description,
+          'thumbnailUrl': video.snippet.thumbnails.high.url,
+          'uploadDate': video.snippet.publishedAt,
+          'duration': 'PT0M0S', // Placeholder as YouTube API v3 doesn't provide duration in this endpoint
+          'contentUrl': `https://www.youtube.com/watch?v=${video.id}`,
+          'embedUrl': `https://www.youtube.com/embed/${video.id}`,
+          'interactionStatistic': {
+            '@type': 'InteractionCounter',
+            'interactionType': { '@type': 'http://schema.org/WatchAction' },
+            'userInteractionCount': parseInt(video.statistics.viewCount, 10)
+          },
+          'author': {
+            '@type': 'Person',
+            'name': video.snippet.channelTitle
+          }
+        }
+      })),
+    };
+
     return (
       <div className="flex flex-col min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <Header currentRegion={region} currentCategory={category} />
         <main className="flex-1 container mx-auto px-4 py-8">
           {videos.length > 0 ? (

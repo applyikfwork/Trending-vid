@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-const regions = [
+export const regions = [
   { value: 'US', label: '🇺🇸 United States' },
   { value: 'IN', label: '🇮🇳 India' },
   { value: 'GB', label: '🇬🇧 Great Britain' },
