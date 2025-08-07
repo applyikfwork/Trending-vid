@@ -6,8 +6,8 @@ const VIDEOS_API_URL = 'https://www.googleapis.com/youtube/v3/videos';
 const SEARCH_API_URL = 'https://www.googleapis.com/youtube/v3/search';
 
 async function fetchFromApi(url: URL) {
-  if (!API_KEY || API_KEY === 'YOUR_YOUTUBE_API_KEY') {
-    throw new Error('YOUTUBE_API_KEY is not set. Please replace "YOUR_YOUTUBE_API_KEY" in src/lib/youtube.ts with your actual key.');
+  if (!API_KEY) {
+    throw new Error('YOUTUBE_API_KEY is not set in the environment variables.');
   }
   url.searchParams.append('key', API_KEY);
 
@@ -36,7 +36,7 @@ async function fetchFromApi(url: URL) {
 
 export async function getTrendingVideos(regionCode: string, categoryId: string = '0'): Promise<YouTubeVideo[]> {
   const url = new URL(VIDEOS_API_URL);
-  url.searchParams.append('part', 'snippet,statistics');
+  url.searchParams.append('part', 'snippet,statistics,contentDetails');
   url.searchParams.append('chart', 'mostPopular');
   url.searchParams.append('maxResults', '50');
   url.searchParams.append('regionCode', regionCode);
@@ -54,12 +54,15 @@ export async function getTrendingShorts(regionCode: string): Promise<YouTubeVide
   searchUrl.searchParams.append('q', '#shorts');
   searchUrl.searchParams.append('type', 'video');
   searchUrl.searchParams.append('videoDuration', 'short');
-  searchUrl.searchParams.append('order', 'date');
+  searchUrl.searchParams.append('order', 'viewCount');
   searchUrl.searchParams.append('relevanceLanguage', 'en');
   searchUrl.searchParams.append('maxResults', '50');
   searchUrl.searchParams.append('regionCode', regionCode);
   
   const searchData = await fetchFromApi(searchUrl);
+  if (!searchData.items || searchData.items.length === 0) {
+    return [];
+  }
   const videoIds = searchData.items.map((item: any) => item.id.videoId).join(',');
 
   if (!videoIds) {
@@ -67,8 +70,8 @@ export async function getTrendingShorts(regionCode: string): Promise<YouTubeVide
   }
 
   const videosUrl = new URL(VIDEOS_API_URL);
-  videosUrl.searchParams.append('part', 'snippet,statistics');
-  videosUrl.search_params.append('id', videoIds);
+  videosUrl.searchParams.append('part', 'snippet,statistics,contentDetails');
+  videosUrl.searchParams.append('id', videoIds);
     
   const videosData = await fetchFromApi(videosUrl);
   return videosData.items || [];

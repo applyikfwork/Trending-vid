@@ -43,7 +43,12 @@ export async function generateMetadata({
   }
   
   const description = `Watch the latest and most popular trending YouTube videos in ${regionLabel} for the ${categoryLabel} category. Updated hourly.`;
-  const imageUrl = "https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"; // A default image
+  const imageUrl = "https://placehold.co/1200x630.png";
+
+  const pageUrl = new URL('https://trending-vid.netlify.app');
+  pageUrl.searchParams.set('region', region);
+  pageUrl.searchParams.set('category', category);
+
 
   return {
     title: title,
@@ -51,13 +56,13 @@ export async function generateMetadata({
     openGraph: {
       title: title,
       description: description,
-      url: new URL(`https://trending-vid.netlify.app?region=${region}&category=${category}`),
+      url: pageUrl,
       siteName: 'Trend Gazer',
       images: [
         {
           url: imageUrl,
-          width: 1280,
-          height: 720,
+          width: 1200,
+          height: 630,
           alt: 'Trending videos on Trend Gazer',
         },
       ],
@@ -89,11 +94,14 @@ export default async function Home({
         ? await getTrendingShorts(region)
         : await getTrendingVideos(region, categoryId);
 
+    const regionLabel = regions.find(r => r.value === region)?.label.split(' ').slice(1).join(' ') || 'India';
+    const categoryLabel = categoryLabels[category] || 'All';
+
     const jsonLd = {
       '@context': 'https://schema.org',
       '@type': 'ItemList',
-      'name': `Trending ${categoryLabels[category]} Videos in ${regions.find(r => r.value === region)?.label || 'India'}`,
-      'description': `A list of the top trending YouTube videos for the category ${categoryLabels[category]} in ${regions.find(r => r.value === region)?.label || 'India'}.`,
+      'name': `Trending ${categoryLabel} Videos in ${regionLabel}`,
+      'description': `A list of the top trending YouTube videos for the category ${categoryLabel} in ${regionLabel}.`,
       'itemListElement': videos.map((video, index) => ({
         '@type': 'ListItem',
         'position': index + 1,
@@ -103,7 +111,7 @@ export default async function Home({
           'description': video.snippet.description,
           'thumbnailUrl': video.snippet.thumbnails.high.url,
           'uploadDate': video.snippet.publishedAt,
-          'duration': 'PT0M0S', // Placeholder as YouTube API v3 doesn't provide duration in this endpoint
+          'duration': video.contentDetails?.duration, 
           'contentUrl': `https://www.youtube.com/watch?v=${video.id}`,
           'embedUrl': `https://www.youtube.com/embed/${video.id}`,
           'interactionStatistic': {

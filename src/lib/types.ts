@@ -19,4 +19,7 @@ export interface YouTubeVideo {
     favoriteCount?: string;
     commentCount?: string;
   };
+  contentDetails?: {
+    duration: string;
+  };
 }
