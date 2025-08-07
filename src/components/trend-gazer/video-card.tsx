@@ -125,17 +125,17 @@ export function VideoCard({ video, rank }: VideoCardProps) {
                 </div>
               </div>
             </CardContent>
-            <CardFooter className="p-4 pt-2 flex flex-col sm:flex-row justify-between items-stretch text-xs text-muted-foreground gap-2">
+            <CardFooter className="p-4 pt-2 flex justify-between items-center gap-2">
               <DialogTrigger asChild>
                 <Button variant="outline" size="sm" className="w-full">
                   <PlayCircle />
-                  Watch Preview
+                  Watch
                 </Button>
               </DialogTrigger>
               <Button asChild variant="secondary" size="sm" className="w-full">
                 <Link href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noopener noreferrer">
                   <Youtube />
-                  Open on YouTube
+                  YouTube
                 </Link>
               </Button>
             </CardFooter>
