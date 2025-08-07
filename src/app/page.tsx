@@ -23,13 +23,11 @@ const categoryLabels: Record<string, string> = {
   shorts: 'Shorts',
 };
 
-type PageProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
 export async function generateMetadata({
   searchParams,
-}: PageProps): Promise<Metadata> {
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}): Promise<Metadata> {
   const region = (searchParams.region as string) || 'IN';
   const category = (searchParams.category as string) || 'all';
 
