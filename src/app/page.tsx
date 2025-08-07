@@ -23,13 +23,15 @@ const categoryLabels: Record<string, string> = {
   shorts: 'Shorts',
 };
 
+type PageProps = {
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
 export async function generateMetadata({
   searchParams,
-}: {
-  searchParams: { region?: string; category?: string };
-}): Promise<Metadata> {
-  const region = searchParams.region || 'IN';
-  const category = searchParams.category || 'all';
+}: PageProps): Promise<Metadata> {
+  const region = (searchParams.region as string) || 'IN';
+  const category = (searchParams.category as string) || 'all';
 
   const regionLabel = regions.find((r) => r.value === region)?.label.split(' ').slice(1).join(' ') || 'India';
   const categoryLabel = categoryLabels[category] || 'All';
@@ -46,8 +48,8 @@ export async function generateMetadata({
   const imageUrl = "https://placehold.co/1200x630.png";
 
   const pageUrl = new URL('https://trending-vid.netlify.app');
-  pageUrl.searchParams.set('region', region);
-  pageUrl.searchParams.set('category', category);
+  if (region) pageUrl.searchParams.set('region', region);
+  if (category) pageUrl.searchParams.set('category', category);
 
 
   return {
@@ -79,13 +81,9 @@ export async function generateMetadata({
 }
 
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: { region?: string; category?: string };
-}) {
-  const region = searchParams.region || 'IN';
-  const category = searchParams.category || 'all';
+export default async function Home({ searchParams }: PageProps) {
+  const region = (searchParams.region as string) || 'IN';
+  const category = (searchParams.category as string) || 'all';
   const categoryId = videoCategoryIds[category] || '0';
 
   try {
