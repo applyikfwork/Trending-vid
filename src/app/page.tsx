@@ -8,6 +8,7 @@ import type { Metadata } from 'next';
 import { regions } from '@/lib/regions';
 
 export const revalidate = 300; // Revalidate every 5 minutes
+export const dynamic = 'force-dynamic';
 
 const videoCategoryIds: Record<string, string> = {
   all: '0',
