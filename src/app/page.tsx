@@ -81,7 +81,7 @@ export async function generateMetadata({
 }
 
 
-export default async function Home({ searchParams }: PageProps) {
+export default async function Home({ searchParams }: { searchParams: { [key: string]: string | string[] | undefined } }) {
   const region = (searchParams.region as string) || 'IN';
   const category = (searchParams.category as string) || 'all';
   const categoryId = videoCategoryIds[category] || '0';
