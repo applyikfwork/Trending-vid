@@ -7,7 +7,7 @@ import { AlertTriangle } from 'lucide-react';
 import type { Metadata } from 'next';
 import { regions } from '@/lib/regions';
 
-export const revalidate = 3600; // Revalidate every hour
+export const revalidate = 300; // Revalidate every 5 minutes
 
 const videoCategoryIds: Record<string, string> = {
   all: '0',

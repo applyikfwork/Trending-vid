@@ -1,7 +1,7 @@
 
 import type { YouTubeVideo } from './types';
 
-const API_KEY = 'AIzaSyCyEF3GUU7_zRp4-qQQhn7gccrifsdDUgY';
+const API_KEY = process.env.YOUTUBE_API_KEY;
 const VIDEOS_API_URL = 'https://www.googleapis.com/youtube/v3/videos';
 const SEARCH_API_URL = 'https://www.googleapis.com/youtube/v3/search';
 
@@ -13,7 +13,7 @@ async function fetchFromApi(url: URL) {
 
   try {
     const response = await fetch(url.toString(), {
-      next: { revalidate: 3600 } // Cache for 1 hour
+      next: { revalidate: 300 } // Cache for 5 minutes
     });
     
     if (!response.ok) {
