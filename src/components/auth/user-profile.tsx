@@ -4,9 +4,11 @@ import { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { User, LogOut, Settings, Heart } from 'lucide-react';
+import { User, LogOut, Settings, Heart, Shield, BarChart3 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { logOut } from '@/lib/firebase';
+import { isAdmin } from '@/lib/admin';
+import Link from 'next/link';
 
 export function UserProfile() {
   const { user } = useAuth();
@@ -43,14 +45,27 @@ export function UserProfile() {
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <User className="mr-2 h-4 w-4" />
-          <span>Profile</span>
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard" className="flex items-center w-full">
+            <BarChart3 className="mr-2 h-4 w-4" />
+            <span>Dashboard</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Heart className="mr-2 h-4 w-4" />
           <span>Favorites</span>
         </DropdownMenuItem>
+        {isAdmin(user.email) && (
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/admin" className="flex items-center w-full">
+                <Shield className="mr-2 h-4 w-4" />
+                <span>Admin Panel</span>
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
         <DropdownMenuItem>
           <Settings className="mr-2 h-4 w-4" />
           <span>Settings</span>

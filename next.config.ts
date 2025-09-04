@@ -44,6 +44,15 @@ const nextConfig: NextConfig = {
       allowedOrigins: ['*'],
     },
   },
+  // Fix cross-origin warnings for Replit
+  async rewrites() {
+    return [
+      {
+        source: '/_next/:path*',
+        destination: '/_next/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

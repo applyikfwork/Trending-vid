@@ -5,6 +5,7 @@ import { Inter as FontSans } from "next/font/google"
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ApiStatusBanner } from '@/components/trend-gazer/api-status-banner';
+import { ErrorBoundary } from '@/components/error-boundary';
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -34,9 +35,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ApiStatusBanner />
-          {children}
-          <Toaster />
+          <ErrorBoundary>
+            <ApiStatusBanner />
+            {children}
+            <Toaster />
+          </ErrorBoundary>
         </ThemeProvider>
       </body>
     </html>
