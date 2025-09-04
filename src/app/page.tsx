@@ -7,7 +7,7 @@ import { AlertTriangle } from 'lucide-react';
 import type { YouTubeVideo } from '@/lib/types';
 import { summarizeTrendingVideos } from '@/ai/flows/summarize-trending-videos';
 import { Suspense } from 'react';
-import { VideoGridSkeleton } from '@/components/trend-gazer/loading-skeleton';
+import { EnhancedLoading } from '@/components/trend-gazer/enhanced-loading';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -24,6 +24,13 @@ async function getVideosWithSummaries(
   if (!videos.length) {
     return [];
   }
+  
+  // Check if GEMINI_API_KEY is available
+  if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_API_KEY) {
+    console.warn('GEMINI_API_KEY not found. Video summaries will be disabled. Add your API key in the Secrets tool.');
+    return videos;
+  }
+  
   try {
     const { summaries } = await summarizeTrendingVideos({
       videos: videos.map((v) => ({
@@ -71,7 +78,7 @@ export default async function Home({
       <div className="flex flex-col min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20">
         <Header currentRegion={region} currentCategory={category} videos={videos} />
         <main className="flex-1 container mx-auto px-4 py-8">
-          <Suspense fallback={<VideoGridSkeleton />}>
+          <Suspense fallback={<EnhancedLoading />}>
             {videos.length > 0 ? (
               <VideoGrid videos={videos} currentRegion={region} currentCategory={category} />
             ) : (
@@ -98,7 +105,7 @@ export default async function Home({
       error instanceof Error ? error.message : 'An unknown error occurred.';
     return (
       <div className="flex flex-col min-h-screen">
-        <Header currentRegion={region} currentCategory={category} videos={videos} />
+        <Header currentRegion={region} currentCategory={category} videos={[]} />
         <main className="flex-1 container mx-auto px-4 py-8">
           <Alert
             variant="destructive"
