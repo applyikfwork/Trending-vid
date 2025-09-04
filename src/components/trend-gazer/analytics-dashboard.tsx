@@ -53,10 +53,10 @@ export function AnalyticsDashboard({ videos, currentRegion }: AnalyticsDashboard
 
   // Calculate analytics from current videos
   const totalViews = videos.reduce((sum, v) => sum + parseInt(v.statistics.viewCount), 0);
-  const avgViewsPerVideo = videos.length > 0 ? totalViews / videos.length : 0;
-  const topPerformer = videos.length > 0 ? videos.reduce((top, current) => 
+  const avgViewsPerVideo = totalViews / videos.length;
+  const topPerformer = videos.reduce((top, current) => 
     parseInt(current.statistics.viewCount) > parseInt(top.statistics.viewCount) ? current : top
-  ) : null;
+  );
 
   // Mock creator leaderboard
   const creatorLeaderboard = videos
@@ -138,10 +138,10 @@ export function AnalyticsDashboard({ videos, currentRegion }: AnalyticsDashboard
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {topPerformer ? (parseInt(topPerformer.statistics.viewCount) / 1000000).toFixed(1) + 'M' : 'N/A'}
+                    {(parseInt(topPerformer.statistics.viewCount) / 1000000).toFixed(1)}M
                   </div>
                   <p className="text-xs text-muted-foreground line-clamp-1">
-                    {topPerformer ? topPerformer.snippet.title : 'No videos available'}
+                    {topPerformer.snippet.title}
                   </p>
                 </CardContent>
               </Card>
