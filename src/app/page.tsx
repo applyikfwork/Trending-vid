@@ -50,10 +50,11 @@ async function getVideosWithSummaries(
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { region?: string; category?: string };
+  searchParams: Promise<{ region?: string; category?: string }>;
 }) {
-  const region = searchParams.region || 'IN';
-  const category = searchParams.category || 'all';
+  const params = await searchParams;
+  const region = params.region || 'IN';
+  const category = params.category || 'all';
   const categoryId = videoCategoryIds[category] || '0';
 
   try {

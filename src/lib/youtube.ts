@@ -1,18 +1,19 @@
 
 import type { YouTubeVideo } from './types';
 
-const API_KEY = 'AIzaSyCyEF3GUU7_zRp4-qQQhn7gccrifsdDUgY';
+const API_KEY = process.env.YOUTUBE_API_KEY || 'AIzaSyCyEF3GUU7_zRp4-qQQhn7gccrifsdDUgY';
 const VIDEOS_API_URL = 'https://www.googleapis.com/youtube/v3/videos';
 const SEARCH_API_URL = 'https://www.googleapis.com/youtube/v3/search';
 
 async function fetchFromApi(url: URL) {
   if (!API_KEY || API_KEY === 'YOUR_YOUTUBE_API_KEY') {
-    throw new Error('YOUTUBE_API_KEY is not set. Please replace "YOUR_YOUTUBE_API_KEY" in src/lib/youtube.ts with your actual key.');
+    throw new Error('YOUTUBE_API_KEY is not set. Please set the YOUTUBE_API_KEY environment variable with your actual key.');
   }
   url.searchParams.append('key', API_KEY);
 
   try {
     const response = await fetch(url.toString(), {
+      cache: 'force-cache',
       next: { revalidate: 3600 } // Cache for 1 hour
     });
     
@@ -68,7 +69,7 @@ export async function getTrendingShorts(regionCode: string): Promise<YouTubeVide
 
   const videosUrl = new URL(VIDEOS_API_URL);
   videosUrl.searchParams.append('part', 'snippet,statistics');
-  videosUrl.search_params.append('id', videoIds);
+  videosUrl.searchParams.append('id', videoIds);
     
   const videosData = await fetchFromApi(videosUrl);
   return videosData.items || [];

@@ -24,6 +24,22 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Enable all hosts for Replit proxy compatibility
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+        ],
+      },
+    ];
+  },
+  // Allow all dev origins for Replit proxy compatibility
+  allowedDevOrigins: ['*', '*.replit.dev', 'localhost', '127.0.0.1'],
 };
 
 export default nextConfig;
