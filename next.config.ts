@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
     ];
   },
   // Allow all dev origins for Replit proxy compatibility
-  allowedDevOrigins: ['*', '*.replit.dev', 'localhost', '127.0.0.1'],
+  allowedDevOrigins: ['*'],
 };
 
 export default nextConfig;

@@ -6,6 +6,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import type { YouTubeVideo } from '@/lib/types';
 import { summarizeTrendingVideos } from '@/ai/flows/summarize-trending-videos';
+import { Suspense } from 'react';
+import { VideoGridSkeleton } from '@/components/trend-gazer/loading-skeleton';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -66,24 +68,27 @@ export default async function Home({
     const videos = await getVideosWithSummaries(rawVideos);
 
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20">
         <Header currentRegion={region} currentCategory={category} />
         <main className="flex-1 container mx-auto px-4 py-8">
-          {videos.length > 0 ? (
-            <VideoGrid videos={videos} />
-          ) : (
-            <div className="text-center py-20">
-              <h2 className="text-3xl font-bold tracking-tight">
-                No Trending Videos Found
-              </h2>
-              <p className="text-muted-foreground mt-2">
-                There are no trending videos for this category and region at the
-                moment.
-                <br />
-                Please try selecting different options.
-              </p>
-            </div>
-          )}
+          <Suspense fallback={<VideoGridSkeleton />}>
+            {videos.length > 0 ? (
+              <VideoGrid videos={videos} />
+            ) : (
+              <div className="text-center py-20">
+                <div className="text-6xl mb-6">📺</div>
+                <h2 className="text-4xl font-bold tracking-tight mb-4 bg-gradient-to-r from-foreground to-muted-foreground bg-clip-text text-transparent">
+                  No Trending Videos Found
+                </h2>
+                <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
+                  There are no trending videos for this category and region at the moment.
+                </p>
+                <p className="text-muted-foreground mt-2">
+                  Please try selecting different options or check back later.
+                </p>
+              </div>
+            )}
+          </Suspense>
         </main>
         <Footer />
       </div>

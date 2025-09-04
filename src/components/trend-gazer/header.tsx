@@ -1,6 +1,9 @@
 import { RegionSelector } from './region-selector';
 import { CategoryTabs } from './category-tabs';
 import { ThemeToggle } from './theme-toggle';
+import { SearchBar } from './search-bar';
+import { AnalyticsBadge } from './analytics-badge';
+import { Sparkles, TrendingUp } from 'lucide-react';
 
 type HeaderProps = {
   currentRegion: string;
@@ -9,19 +12,26 @@ type HeaderProps = {
 
 export function Header({ currentRegion, currentCategory }: HeaderProps) {
   return (
-    <header className="bg-background/80 backdrop-blur-sm border-b sticky top-0 z-10">
+    <header className="bg-gradient-to-r from-background/95 via-background/90 to-background/95 backdrop-blur-md border-b border-border/50 shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="py-4 flex justify-between items-center gap-2 sm:gap-4">
-          <h1 className="text-xl sm:text-2xl font-bold text-primary tracking-tighter whitespace-nowrap">
-            <span className="mr-2 text-2xl sm:text-3xl">🔥</span>
-            Trend Gazer
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl sm:text-3xl font-bold bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text text-transparent tracking-tighter whitespace-nowrap flex items-center gap-2">
+              <span className="text-2xl sm:text-4xl">🔥</span>
+              <span>Trend Gazer</span>
+              <Sparkles className="w-5 h-5 text-purple-500 animate-pulse" />
+            </h1>
+            <AnalyticsBadge />
+          </div>
           <div className="flex items-center gap-2 sm:gap-4">
+            <SearchBar />
             <RegionSelector currentRegion={currentRegion} />
             <ThemeToggle />
           </div>
         </div>
-        <CategoryTabs currentCategory={currentCategory} />
+        <div className="pb-4">
+          <CategoryTabs currentCategory={currentCategory} />
+        </div>
       </div>
     </header>
   );

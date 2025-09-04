@@ -99,6 +99,7 @@ export function VideoCard({ video, rank }: VideoCardProps) {
                         width={640}
                         height={480}
                         className="w-full h-auto object-cover aspect-video transition-transform duration-500 group-hover:scale-110 rounded-t-xl"
+                        priority={rank <= 4}
                         data-ai-hint="video thumbnail"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-xl">
