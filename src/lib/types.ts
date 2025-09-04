@@ -20,4 +20,25 @@ export interface YouTubeVideo {
     commentCount?: string;
   };
   summary?: string; // AI-generated summary
+  userVote?: 'up' | 'down' | null; // User's vote on this video
+  communityVotes?: {
+    upVotes: number;
+    downVotes: number;
+  }; // Community voting stats
+}
+
+export interface UserVote {
+  userId: string;
+  videoId: string;
+  type: 'up' | 'down';
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
+export interface VideoStats {
+  videoId: string;
+  upVotes: number;
+  downVotes: number;
+  createdAt: Date;
+  updatedAt: Date;
 }

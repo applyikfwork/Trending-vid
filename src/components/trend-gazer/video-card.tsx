@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
 import { Badge } from '../ui/badge';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '../ui/tooltip';
+import { VotingControls } from '../video/voting-controls';
 
 type VideoCardProps = {
   video: YouTubeVideo;
@@ -147,19 +148,24 @@ export function VideoCard({ video, rank }: VideoCardProps) {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter className="p-4 pt-2 flex justify-between items-center gap-2">
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="w-full">
-                    <PlayCircle /> Watch
-                  </Button>
-                </DialogTrigger>
-                 {video.summary && (
+              <CardFooter className="p-4 pt-2 flex flex-col gap-2">
+                <div className="flex justify-between items-center gap-2 w-full">
                   <DialogTrigger asChild>
-                    <Button variant="secondary" size="sm" className="w-full">
-                      <Bot /> Summarize
+                    <Button variant="outline" size="sm" className="flex-1">
+                      <PlayCircle /> Watch
                     </Button>
                   </DialogTrigger>
-                )}
+                   {video.summary && (
+                    <DialogTrigger asChild>
+                      <Button variant="secondary" size="sm" className="flex-1">
+                        <Bot /> Summarize
+                      </Button>
+                    </DialogTrigger>
+                  )}
+                </div>
+                
+                {/* Voting controls */}
+                <VotingControls videoId={video.id} className="justify-center" />
               </CardFooter>
             </Card>
         </div>

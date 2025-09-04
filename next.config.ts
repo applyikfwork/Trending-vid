@@ -40,7 +40,9 @@ const nextConfig: NextConfig = {
   },
   // Development server configuration for Replit
   experimental: {
-    allowedDevOrigins: ['*'],
+    serverActions: {
+      allowedOrigins: ['*'],
+    },
   },
 };
 

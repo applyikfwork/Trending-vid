@@ -14,6 +14,7 @@ import { VideoPlayerDialog } from './video-player-dialog';
 import { Button } from '../ui/button';
 import { WatchlistButton } from './watchlist-button';
 import { PredictionSystem } from './prediction-system';
+import { VotingControls } from '../video/voting-controls';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
@@ -268,7 +269,7 @@ export function EnhancedVideoCard({ video, rank }: VideoCardProps) {
 
             <CardFooter className="p-4 pt-2 flex flex-col gap-2">
               {/* Action buttons */}
-              <div className="flex gap-2 w-full">
+              <div className="flex gap-2 w-full mb-2">
                 <DialogTrigger asChild>
                   <Button variant="outline" size="sm" className="flex-1">
                     <PlayCircle className="w-4 h-4" />
@@ -278,6 +279,9 @@ export function EnhancedVideoCard({ video, rank }: VideoCardProps) {
                 <WatchlistButton video={video} />
                 <PredictionSystem video={video} />
               </div>
+
+              {/* Voting controls */}
+              <VotingControls videoId={video.id} className="justify-center" />
 
               {/* AI Summary button */}
               {video.summary && (

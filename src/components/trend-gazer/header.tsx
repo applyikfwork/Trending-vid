@@ -3,7 +3,7 @@ import { CategoryTabs } from './category-tabs';
 import { ThemeToggle } from './theme-toggle';
 import { SearchBar } from './search-bar';
 import { AnalyticsBadge } from './analytics-badge';
-import { UserProfile } from './user-profile';
+import { AuthProvider } from '../auth/auth-provider';
 import { GamificationSystem } from './gamification-system';
 import { AnalyticsDashboard } from './analytics-dashboard';
 import { ContestSystem } from './contest-system';
@@ -34,7 +34,7 @@ export function Header({ currentRegion, currentCategory, videos = [] }: HeaderPr
             <ContestSystem />
             <GamificationSystem />
             <RegionSelector currentRegion={currentRegion} />
-            <UserProfile />
+            <AuthProvider />
             <ThemeToggle />
           </div>
         </div>
