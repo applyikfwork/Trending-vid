@@ -19,4 +19,5 @@ export interface YouTubeVideo {
     favoriteCount?: string;
     commentCount?: string;
   };
+  summary?: string; // AI-generated summary
 }

@@ -4,6 +4,8 @@ import { Footer } from '@/components/trend-gazer/footer';
 import { getTrendingVideos, getTrendingShorts } from '@/lib/youtube';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
+import type { YouTubeVideo } from '@/lib/types';
+import { summarizeTrendingVideos } from '@/ai/flows/summarize-trending-videos';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -11,7 +13,39 @@ const videoCategoryIds: Record<string, string> = {
   all: '0',
   music: '10',
   movies: '1',
+  shorts: 'shorts', // Special key for shorts
 };
+
+async function getVideosWithSummaries(
+  videos: YouTubeVideo[]
+): Promise<YouTubeVideo[]> {
+  if (!videos.length) {
+    return [];
+  }
+  try {
+    const { summaries } = await summarizeTrendingVideos({
+      videos: videos.map((v) => ({
+        id: v.id,
+        title: v.snippet.title,
+        channelName: v.snippet.channelTitle,
+        description: v.snippet.description,
+        views: v.statistics.viewCount,
+        publishedDate: v.snippet.publishedAt,
+      })),
+    });
+
+    const summaryMap = new Map(summaries.map((s) => [s.videoId, s.summary]));
+
+    return videos.map((video) => ({
+      ...video,
+      summary: summaryMap.get(video.id),
+    }));
+  } catch (e) {
+    console.error('Failed to get video summaries:', e);
+    // Return videos without summaries if AI flow fails
+    return videos;
+  }
+}
 
 export default async function Home({
   searchParams,
@@ -23,10 +57,12 @@ export default async function Home({
   const categoryId = videoCategoryIds[category] || '0';
 
   try {
-    const videos =
+    const rawVideos =
       category === 'shorts'
         ? await getTrendingShorts(region)
         : await getTrendingVideos(region, categoryId);
+
+    const videos = await getVideosWithSummaries(rawVideos);
 
     return (
       <div className="flex flex-col min-h-screen">
@@ -36,9 +72,12 @@ export default async function Home({
             <VideoGrid videos={videos} />
           ) : (
             <div className="text-center py-20">
-              <h2 className="text-3xl font-bold tracking-tight">No Trending Videos Found</h2>
+              <h2 className="text-3xl font-bold tracking-tight">
+                No Trending Videos Found
+              </h2>
               <p className="text-muted-foreground mt-2">
-                There are no trending videos for this category and region at the moment.
+                There are no trending videos for this category and region at the
+                moment.
                 <br />
                 Please try selecting different options.
               </p>
@@ -49,12 +88,16 @@ export default async function Home({
       </div>
     );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+    const errorMessage =
+      error instanceof Error ? error.message : 'An unknown error occurred.';
     return (
       <div className="flex flex-col min-h-screen">
         <Header currentRegion={region} currentCategory={category} />
         <main className="flex-1 container mx-auto px-4 py-8">
-          <Alert variant="destructive" className="max-w-2xl mx-auto bg-transparent border-destructive/50">
+          <Alert
+            variant="destructive"
+            className="max-w-2xl mx-auto bg-transparent border-destructive/50"
+          >
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Error Fetching Videos</AlertTitle>
             <AlertDescription>{errorMessage}</AlertDescription>
