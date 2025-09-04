@@ -69,11 +69,11 @@ export default async function Home({
 
     return (
       <div className="flex flex-col min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20">
-        <Header currentRegion={region} currentCategory={category} />
+        <Header currentRegion={region} currentCategory={category} videos={videos} />
         <main className="flex-1 container mx-auto px-4 py-8">
           <Suspense fallback={<VideoGridSkeleton />}>
             {videos.length > 0 ? (
-              <VideoGrid videos={videos} />
+              <VideoGrid videos={videos} currentRegion={region} currentCategory={category} />
             ) : (
               <div className="text-center py-20">
                 <div className="text-6xl mb-6">📺</div>
@@ -98,7 +98,7 @@ export default async function Home({
       error instanceof Error ? error.message : 'An unknown error occurred.';
     return (
       <div className="flex flex-col min-h-screen">
-        <Header currentRegion={region} currentCategory={category} />
+        <Header currentRegion={region} currentCategory={category} videos={videos} />
         <main className="flex-1 container mx-auto px-4 py-8">
           <Alert
             variant="destructive"

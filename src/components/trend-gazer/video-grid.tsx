@@ -3,18 +3,21 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { YouTubeVideo } from '@/lib/types';
-import { VideoCard } from './video-card';
+import { EnhancedVideoCard } from './enhanced-video-card';
+import { InfiniteScroll } from './infinite-scroll';
 import { VideoFilters } from './video-filters';
 import { calculateTrendingScore } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 
 type VideoGridProps = {
   videos: YouTubeVideo[];
+  currentRegion?: string;
+  currentCategory?: string;
 };
 
 type SortOption = 'trending' | 'views' | 'recent' | 'likes';
 
-export function VideoGrid({ videos }: VideoGridProps) {
+export function VideoGrid({ videos, currentRegion = 'US', currentCategory = 'all' }: VideoGridProps) {
   const searchParams = useSearchParams();
   const [sortBy, setSortBy] = useState<SortOption>('trending');
   const [viewFilter, setViewFilter] = useState<string>('all');
@@ -85,31 +88,12 @@ export function VideoGrid({ videos }: VideoGridProps) {
         searchQuery={searchQuery}
       />
       
-      <AnimatePresence mode="popLayout">
-        <motion.div 
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-          layout
-        >
-          {filteredAndSortedVideos.map((video, index) => (
-            <motion.div
-              key={video.id}
-              layout
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: -20 }}
-              transition={{ 
-                duration: 0.3, 
-                delay: index * 0.05,
-                type: "spring",
-                stiffness: 100,
-                damping: 15
-              }}
-            >
-              <VideoCard video={video} rank={index + 1} />
-            </motion.div>
-          ))}
-        </motion.div>
-      </AnimatePresence>
+      <InfiniteScroll 
+        initialVideos={filteredAndSortedVideos}
+        currentRegion={currentRegion}
+        currentCategory={currentCategory}
+        searchQuery={searchQuery}
+      />
     </div>
   );
 }

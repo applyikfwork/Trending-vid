@@ -3,14 +3,19 @@ import { CategoryTabs } from './category-tabs';
 import { ThemeToggle } from './theme-toggle';
 import { SearchBar } from './search-bar';
 import { AnalyticsBadge } from './analytics-badge';
+import { UserProfile } from './user-profile';
+import { GamificationSystem } from './gamification-system';
+import { AnalyticsDashboard } from './analytics-dashboard';
+import { ContestSystem } from './contest-system';
 import { Sparkles, TrendingUp } from 'lucide-react';
 
 type HeaderProps = {
   currentRegion: string;
   currentCategory: string;
+  videos?: any[];
 };
 
-export function Header({ currentRegion, currentCategory }: HeaderProps) {
+export function Header({ currentRegion, currentCategory, videos = [] }: HeaderProps) {
   return (
     <header className="bg-gradient-to-r from-background/95 via-background/90 to-background/95 backdrop-blur-md border-b border-border/50 shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -25,7 +30,11 @@ export function Header({ currentRegion, currentCategory }: HeaderProps) {
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
             <SearchBar />
+            <AnalyticsDashboard videos={videos} currentRegion={currentRegion} />
+            <ContestSystem />
+            <GamificationSystem />
             <RegionSelector currentRegion={currentRegion} />
+            <UserProfile />
             <ThemeToggle />
           </div>
         </div>
