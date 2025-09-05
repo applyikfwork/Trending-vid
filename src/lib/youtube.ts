@@ -7,7 +7,8 @@ const SEARCH_API_URL = 'https://www.googleapis.com/youtube/v3/search';
 
 async function fetchFromApi(url: URL) {
   if (!API_KEY) {
-    throw new Error('YOUTUBE_API_KEY is not set. Please add your YouTube API key in the Secrets tool.');
+    // This check is now for local safety, but the key is hardcoded.
+    throw new Error('YOUTUBE_API_KEY is not set.');
   }
   url.searchParams.append('key', API_KEY);
 
@@ -53,7 +54,7 @@ export async function getTrendingShorts(regionCode: string): Promise<YouTubeVide
   const searchUrl = new URL(SEARCH_API_URL);
   searchUrl.searchParams.append('part', 'id');
   searchUrl.searchParams.append('q', '#shorts');
-  searchUrl.searchParams.append('type', 'video');
+  searchUrl.search_params.append('type', 'video');
   searchUrl.searchParams.append('videoDuration', 'short');
   searchUrl.searchParams.append('order', 'date');
   searchUrl.searchParams.append('relevanceLanguage', 'en');

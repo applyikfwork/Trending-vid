@@ -4,8 +4,7 @@
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { YouTubeVideo } from '@/lib/types';
-import { EnhancedVideoCard } from './enhanced-video-card';
-import { InfiniteScroll } from './infinite-scroll';
+import { VideoCard } from './video-card';
 import { VideoFilters } from './video-filters';
 import { calculateTrendingScore } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -89,12 +88,15 @@ export function VideoGrid({ videos, currentRegion = 'US', currentCategory = 'all
         searchQuery={searchQuery}
       />
       
-      <InfiniteScroll 
-        initialVideos={filteredAndSortedVideos}
-        currentRegion={currentRegion}
-        currentCategory={currentCategory}
-        searchQuery={searchQuery}
-      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {filteredAndSortedVideos.map((video, index) => (
+          <VideoCard 
+            key={video.id} 
+            video={video} 
+            rank={index + 1} 
+          />
+        ))}
+      </div>
     </div>
   );
 }
