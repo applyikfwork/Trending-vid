@@ -30,10 +30,12 @@ export default async function Home({
   const categoryId = videoCategoryIds[category] || '0';
 
   try {
-    const videos =
-      category === 'shorts'
-        ? await getTrendingShorts(region)
-        : await getTrendingVideos(region, categoryId);
+    let videos;
+    if (category === 'shorts') {
+      videos = await getTrendingShorts(region);
+    } else {
+      videos = await getTrendingVideos(region, categoryId);
+    }
 
     // Batch generate AI summaries for the initial set of videos
     if (videos.length > 0) {
