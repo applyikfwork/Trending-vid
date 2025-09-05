@@ -11,8 +11,8 @@ import {
 } from '@/components/ui/select';
 
 const regions = [
-  { value: 'US', label: '🇺🇸 United States' },
   { value: 'IN', label: '🇮🇳 India' },
+  { value: 'US', label: '🇺🇸 United States' },
   { value: 'GB', label: '🇬🇧 Great Britain' },
   { value: 'JP', label: '🇯🇵 Japan' },
   { value: 'KR', label: '🇰🇷 South Korea' },

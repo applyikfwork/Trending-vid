@@ -79,7 +79,7 @@ export function AnalyticsDashboard({ videos, currentRegion }: AnalyticsDashboard
       <DialogTrigger asChild>
         <Button variant="outline" className="flex items-center gap-2">
           <BarChart3 className="w-4 h-4" />
-          Analytics
+          <span className="hidden sm:inline">Analytics</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">

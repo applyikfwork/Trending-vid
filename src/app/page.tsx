@@ -3,8 +3,8 @@ import { Footer } from '@/components/trend-gazer/footer';
 import { getTrendingVideos, getTrendingShorts } from '@/lib/youtube';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
-import { InfiniteScroll } from '@/components/trend-gazer/infinite-scroll';
 import { summarizeTrendingVideos } from '@/ai/flows/summarize-trending-videos';
+import { VideoGrid } from '@/components/trend-gazer/video-grid';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -18,24 +18,23 @@ const videoCategoryIds: Record<string, string> = {
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { region?: string; category?: string; search?: string };
+  searchParams: { region?: string; category?: string };
 }) {
-  const region = searchParams.region || 'US';
+  const region = searchParams.region || 'IN'; // Default to India
   const category = searchParams.category || 'all';
-  const searchQuery = searchParams.search || '';
   const categoryId = videoCategoryIds[category] || '0';
 
   try {
-    const initialVideos =
+    const videos =
       category === 'shorts'
         ? await getTrendingShorts(region)
         : await getTrendingVideos(region, categoryId);
 
     // Batch generate AI summaries for the initial set of videos
-    if (initialVideos.length > 0) {
+    if (videos.length > 0) {
       try {
         const summaryInput = {
-          videos: initialVideos.slice(0, 10).map((v) => ({
+          videos: videos.slice(0, 10).map((v) => ({
             id: v.id,
             title: v.snippet.title,
             channelName: v.snippet.channelTitle,
@@ -48,7 +47,7 @@ export default async function Home({
 
         // Merge summaries back into the video objects
         summaryOutput.summaries.forEach((summary) => {
-          const video = initialVideos.find((v) => v.id === summary.videoId);
+          const video = videos.find((v) => v.id === summary.videoId);
           if (video) {
             video.summary = summary.summary;
           }
@@ -64,15 +63,14 @@ export default async function Home({
         <Header
           currentRegion={region}
           currentCategory={category}
-          videos={initialVideos}
+          videos={videos}
         />
         <main className="flex-1 container mx-auto px-4 py-8">
-          {initialVideos.length > 0 ? (
-            <InfiniteScroll
-              initialVideos={initialVideos}
+          {videos.length > 0 ? (
+            <VideoGrid
+              videos={videos}
               currentRegion={region}
               currentCategory={category}
-              searchQuery={searchQuery}
             />
           ) : (
             <div className="text-center py-20">
