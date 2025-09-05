@@ -75,4 +75,3 @@ export async function getTrendingShorts(regionCode: string): Promise<YouTubeVide
   const videosData = await fetchFromApi(videosUrl);
   return videosData.items || [];
 }
-
