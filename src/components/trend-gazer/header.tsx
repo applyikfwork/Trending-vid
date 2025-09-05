@@ -1,16 +1,28 @@
+'use client';
+
 import { RegionSelector } from './region-selector';
 import { CategoryTabs } from './category-tabs';
 import { ThemeToggle } from './theme-toggle';
 import { SearchBar } from './search-bar';
+import { Sparkles, Trophy } from 'lucide-react';
+import { AnalyticsDashboard } from './analytics-dashboard';
+import { GamificationSystem } from './gamification-system';
+import { ContestSystem } from './contest-system';
 import { AuthProvider } from '../auth/auth-provider';
-import { Sparkles } from 'lucide-react';
+import type { YouTubeVideo } from '@/lib/types';
+import { UserProfile } from './user-profile';
 
 type HeaderProps = {
   currentRegion: string;
   currentCategory: string;
+  videos: YouTubeVideo[];
 };
 
-export function Header({ currentRegion, currentCategory }: HeaderProps) {
+export function Header({
+  currentRegion,
+  currentCategory,
+  videos,
+}: HeaderProps) {
   return (
     <header className="bg-gradient-to-r from-background/95 via-background/90 to-background/95 backdrop-blur-md border-b border-border/50 shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
@@ -25,11 +37,15 @@ export function Header({ currentRegion, currentCategory }: HeaderProps) {
           <div className="flex items-center gap-2 sm:gap-4">
             <SearchBar />
             <RegionSelector currentRegion={currentRegion} />
+            <AnalyticsDashboard videos={videos} currentRegion={currentRegion} />
+            <ContestSystem />
+            <GamificationSystem />
             <AuthProvider />
+            <UserProfile />
             <ThemeToggle />
           </div>
         </div>
-        <div className="pb-4">
+        <div>
           <CategoryTabs currentCategory={currentCategory} />
         </div>
       </div>

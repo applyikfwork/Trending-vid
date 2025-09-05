@@ -1,11 +1,10 @@
-
 import { Header } from '@/components/trend-gazer/header';
-import { VideoGrid } from '@/components/trend-gazer/video-grid';
 import { Footer } from '@/components/trend-gazer/footer';
 import { getTrendingVideos, getTrendingShorts } from '@/lib/youtube';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
-import type { YouTubeVideo } from '@/lib/types';
+import { InfiniteScroll } from '@/components/trend-gazer/infinite-scroll';
+import { summarizeTrendingVideos } from '@/ai/flows/summarize-trending-videos';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -19,24 +18,62 @@ const videoCategoryIds: Record<string, string> = {
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { region?: string; category?: string };
+  searchParams: { region?: string; category?: string; search?: string };
 }) {
   const region = searchParams.region || 'US';
   const category = searchParams.category || 'all';
+  const searchQuery = searchParams.search || '';
   const categoryId = videoCategoryIds[category] || '0';
 
   try {
-    const videos =
+    const initialVideos =
       category === 'shorts'
         ? await getTrendingShorts(region)
         : await getTrendingVideos(region, categoryId);
 
+    // Batch generate AI summaries for the initial set of videos
+    if (initialVideos.length > 0) {
+      try {
+        const summaryInput = {
+          videos: initialVideos.slice(0, 10).map((v) => ({
+            id: v.id,
+            title: v.snippet.title,
+            channelName: v.snippet.channelTitle,
+            description: v.snippet.description,
+            views: v.statistics.viewCount,
+            publishedDate: v.snippet.publishedAt,
+          })),
+        };
+        const summaryOutput = await summarizeTrendingVideos(summaryInput);
+
+        // Merge summaries back into the video objects
+        summaryOutput.summaries.forEach((summary) => {
+          const video = initialVideos.find((v) => v.id === summary.videoId);
+          if (video) {
+            video.summary = summary.summary;
+          }
+        });
+      } catch (aiError) {
+        console.error('AI summary generation failed:', aiError);
+        // Continue without summaries if AI fails
+      }
+    }
+
     return (
       <div className="flex flex-col min-h-screen bg-gradient-to-br from-background via-background/95 to-muted/20">
-        <Header currentRegion={region} currentCategory={category} />
+        <Header
+          currentRegion={region}
+          currentCategory={category}
+          videos={initialVideos}
+        />
         <main className="flex-1 container mx-auto px-4 py-8">
-          {videos.length > 0 ? (
-            <VideoGrid videos={videos} currentRegion={region} currentCategory={category} />
+          {initialVideos.length > 0 ? (
+            <InfiniteScroll
+              initialVideos={initialVideos}
+              currentRegion={region}
+              currentCategory={category}
+              searchQuery={searchQuery}
+            />
           ) : (
             <div className="text-center py-20">
               <div className="text-6xl mb-6">📺</div>
@@ -44,7 +81,8 @@ export default async function Home({
                 No Trending Videos Found
               </h2>
               <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
-                There are no trending videos for this category and region at the moment.
+                There are no trending videos for this category and region at the
+                moment.
               </p>
               <p className="text-muted-foreground mt-2">
                 Please try selecting different options or check back later.
@@ -60,7 +98,7 @@ export default async function Home({
       error instanceof Error ? error.message : 'An unknown error occurred.';
     return (
       <div className="flex flex-col min-h-screen">
-        <Header currentRegion={region} currentCategory={category} />
+        <Header currentRegion={region} currentCategory={category} videos={[]} />
         <main className="flex-1 container mx-auto px-4 py-8">
           <Alert
             variant="destructive"

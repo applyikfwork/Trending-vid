@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { YouTubeVideo } from '@/lib/types';
-import { VideoCard } from './video-card';
+import { EnhancedVideoCard } from './enhanced-video-card';
 import { VideoFilters } from './video-filters';
 import { calculateTrendingScore } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -89,13 +88,23 @@ export function VideoGrid({ videos, currentRegion = 'US', currentCategory = 'all
       />
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredAndSortedVideos.map((video, index) => (
-          <VideoCard 
-            key={video.id} 
-            video={video} 
-            rank={index + 1} 
-          />
-        ))}
+        <AnimatePresence>
+          {filteredAndSortedVideos.map((video, index) => (
+            <motion.div
+              key={video.id}
+              layout
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <EnhancedVideoCard 
+                video={video} 
+                rank={index + 1} 
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );
