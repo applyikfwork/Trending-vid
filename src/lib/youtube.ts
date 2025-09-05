@@ -54,7 +54,7 @@ export async function getTrendingShorts(regionCode: string): Promise<YouTubeVide
   const searchUrl = new URL(SEARCH_API_URL);
   searchUrl.searchParams.append('part', 'id');
   searchUrl.searchParams.append('q', '#shorts');
-  searchUrl.search_params.append('type', 'video');
+  searchUrl.searchParams.append('type', 'video');
   searchUrl.searchParams.append('videoDuration', 'short');
   searchUrl.searchParams.append('order', 'date');
   searchUrl.searchParams.append('relevanceLanguage', 'en');
@@ -75,3 +75,4 @@ export async function getTrendingShorts(regionCode: string): Promise<YouTubeVide
   const videosData = await fetchFromApi(videosUrl);
   return videosData.items || [];
 }
+
