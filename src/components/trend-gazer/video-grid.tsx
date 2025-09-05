@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -87,7 +88,7 @@ export function VideoGrid({ videos, currentRegion = 'US', currentCategory = 'all
         searchQuery={searchQuery}
       />
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         <AnimatePresence>
           {filteredAndSortedVideos.map((video, index) => (
             <motion.div
