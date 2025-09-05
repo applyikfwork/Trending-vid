@@ -5,7 +5,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Music, Clapperboard, Home, Flame } from 'lucide-react';
+import { Music, Clapperboard, Home, Flame, Gamepad2, Tv, Lightbulb, Newspaper } from 'lucide-react';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 const categories = [
@@ -13,10 +13,10 @@ const categories = [
   { name: 'shorts', label: 'Shorts', icon: Flame },
   { name: 'music', label: 'Music', icon: Music },
   { name: 'movies', label: 'Movies', icon: Clapperboard },
-  { name: 'gaming', label: 'Gaming', icon: Home },
-  { name: 'sports', label: 'Sports', icon: Home },
-  { name: 'tech', label: 'Tech', icon: Home },
-  { name: 'news', label: 'News', icon: Home },
+  { name: 'gaming', label: 'Gaming', icon: Gamepad2 },
+  { name: 'sports', label: 'Sports', icon: Tv },
+  { name: 'tech', label: 'Tech', icon: Lightbulb },
+  { name: 'news', label: 'News', icon: Newspaper },
 ];
 
 export function CategoryTabs({ currentCategory }: { currentCategory: string }) {

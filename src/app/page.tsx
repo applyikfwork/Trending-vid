@@ -1,3 +1,4 @@
+
 import { Header } from '@/components/trend-gazer/header';
 import { Footer } from '@/components/trend-gazer/footer';
 import { getTrendingVideos, getTrendingShorts } from '@/lib/youtube';
@@ -13,6 +14,10 @@ const videoCategoryIds: Record<string, string> = {
   music: '10',
   movies: '1',
   shorts: 'shorts', // Special key for shorts
+  gaming: '20',
+  sports: '17',
+  tech: '28',
+  news: '25',
 };
 
 export default async function Home({
