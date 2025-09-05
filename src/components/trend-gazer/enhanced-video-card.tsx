@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -74,12 +75,21 @@ export function EnhancedVideoCard({ video, rank }: VideoCardProps) {
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const hoverTimeout = useRef<NodeJS.Timeout | null>(null);
+  
+  const [clientReady, setClientReady] = useState(false);
+  const [viralPotential, setViralPotential] = useState({ level: 'low', score: 0, trend: 'stable' });
+  const [engagementPrediction, setEngagementPrediction] = useState({ views24h: 0, likes24h: 0, growthRate: 'low' });
 
   const thumbnailUrl = video.snippet.thumbnails.standard?.url || video.snippet.thumbnails.high.url;
   const trendingScore = calculateTrendingScore(video);
-  const viralPotential = getViralPotential(video);
-  const engagementPrediction = getEngagementPrediction(video);
   const sentimentClass = getSentimentColor(video);
+
+  useEffect(() => {
+    setClientReady(true);
+    setViralPotential(getViralPotential(video));
+    setEngagementPrediction(getEngagementPrediction(video));
+  }, [video]);
+
 
   const handleMouseEnter = () => {
     hoverTimeout.current = setTimeout(() => {
@@ -156,22 +166,24 @@ export function EnhancedVideoCard({ video, rank }: VideoCardProps) {
                   <div className="bg-black/70 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm">
                     <span className="text-yellow-400">#</span>{rank}
                   </div>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div className={cn(
-                          "px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1",
-                          getViralPotentialColor()
-                        )}>
-                          {getTrendIcon()}
-                          {viralPotential.score}
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Viral Potential: {viralPotential.level} ({viralPotential.score}%)</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  {clientReady && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className={cn(
+                            "px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1",
+                            getViralPotentialColor()
+                          )}>
+                            {getTrendIcon()}
+                            {viralPotential.score}
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Viral Potential: {viralPotential.level} ({viralPotential.score}%)</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
                 </div>
 
                 {/* Trending score badge */}
@@ -242,29 +254,33 @@ export function EnhancedVideoCard({ video, rank }: VideoCardProps) {
                   <CalendarDays className="w-3 h-3" />
                   <span>{formatPublishedDate(video.snippet.publishedAt)}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <Brain className="w-3 h-3" />
-                  <span>{engagementPrediction.growthRate}</span>
-                </div>
+                {clientReady && (
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Brain className="w-3 h-3" />
+                    <span>{engagementPrediction.growthRate}</span>
+                  </div>
+                )}
               </div>
 
               {/* AI Predictions */}
-              <div className="space-y-2 p-2 bg-muted/30 rounded-lg">
-                <div className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
-                  <Zap className="w-3 h-3" />
-                  24h Predictions
-                </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div>
-                    <span className="text-muted-foreground">Views: </span>
-                    <span className="font-semibold">{formatViews(engagementPrediction.views24h)}</span>
+              {clientReady && (
+                <div className="space-y-2 p-2 bg-muted/30 rounded-lg">
+                  <div className="text-xs font-semibold text-muted-foreground flex items-center gap-1">
+                    <Zap className="w-3 h-3" />
+                    24h Predictions
                   </div>
-                  <div>
-                    <span className="text-muted-foreground">Likes: </span>
-                    <span className="font-semibold">{formatViews(engagementPrediction.likes24h)}</span>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-muted-foreground">Views: </span>
+                      <span className="font-semibold">{formatViews(engagementPrediction.views24h)}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Likes: </span>
+                      <span className="font-semibold">{formatViews(engagementPrediction.likes24h)}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </CardContent>
 
             <CardFooter className="p-4 pt-2 flex flex-col gap-2">
@@ -309,28 +325,30 @@ export function EnhancedVideoCard({ video, rank }: VideoCardProps) {
           </DialogHeader>
           
           {/* Additional insights */}
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center p-3 bg-muted/30 rounded-lg">
-                <div className="text-lg font-bold text-primary">{viralPotential.score}%</div>
-                <div className="text-xs text-muted-foreground">Viral Potential</div>
+          {clientReady && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                  <div className="text-lg font-bold text-primary">{viralPotential.score}%</div>
+                  <div className="text-xs text-muted-foreground">Viral Potential</div>
+                </div>
+                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                  <div className="text-lg font-bold text-green-600">{engagementPrediction.growthRate}</div>
+                  <div className="text-xs text-muted-foreground">Growth Rate</div>
+                </div>
               </div>
-              <div className="text-center p-3 bg-muted/30 rounded-lg">
-                <div className="text-lg font-bold text-green-600">{engagementPrediction.growthRate}</div>
-                <div className="text-xs text-muted-foreground">Growth Rate</div>
-              </div>
-            </div>
 
-            <div className="flex justify-end gap-2 pt-4">
-              <Button asChild variant="outline" size="sm">
-                <Link href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noopener noreferrer">
-                  <Youtube className="w-4 h-4" />
-                  YouTube
-                </Link>
-              </Button>
-              <WatchlistButton video={video} />
+              <div className="flex justify-end gap-2 pt-4">
+                <Button asChild variant="outline" size="sm">
+                  <Link href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noopener noreferrer">
+                    <Youtube className="w-4 h-4" />
+                    YouTube
+                  </Link>
+                </Button>
+                <WatchlistButton video={video} />
+              </div>
             </div>
-          </div>
+          )}
         </DialogContent>
       </Dialog>
     </VideoPlayerDialog>
