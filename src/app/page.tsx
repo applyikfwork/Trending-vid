@@ -62,7 +62,7 @@ export default async function Home({
 }: {
   searchParams: { region?: string; category?: string };
 }) {
-  const region = searchParams.region || 'IN';
+  const region = searchParams.region || 'US';
   const category = searchParams.category || 'all';
   const categoryId = videoCategoryIds[category] || '0';
 
