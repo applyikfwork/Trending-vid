@@ -1,3 +1,4 @@
+
 import { Header } from '@/components/trend-gazer/header';
 import { VideoGrid } from '@/components/trend-gazer/video-grid';
 import { Footer } from '@/components/trend-gazer/footer';
@@ -59,11 +60,10 @@ async function getVideosWithSummaries(
 export default async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ region?: string; category?: string }>;
+  searchParams: { region?: string; category?: string };
 }) {
-  const params = await searchParams;
-  const region = params.region || 'IN';
-  const category = params.category || 'all';
+  const region = searchParams.region || 'IN';
+  const category = searchParams.category || 'all';
   const categoryId = videoCategoryIds[category] || '0';
 
   try {
