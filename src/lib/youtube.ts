@@ -1,7 +1,7 @@
 
 import type { YouTubeVideo } from './types';
 
-const API_KEY = process.env.YOUTUBE_API_KEY;
+const API_KEY = 'AIzaSyCyEF3GUU7_zRp4-qQQhn7gccrifsdDUgY';
 const VIDEOS_API_URL = 'https://www.googleapis.com/youtube/v3/videos';
 const SEARCH_API_URL = 'https://www.googleapis.com/youtube/v3/search';
 
